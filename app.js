@@ -1,6 +1,7 @@
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fileUpload = require('express-fileupload');
 var session = require('express-session');
 var app = express();
 var port = process.env.PORT || 8080;
@@ -31,6 +32,10 @@ app.use(session({
 }));
 app.use(bodyParser({
 	uploadDir: '/images'
+}));
+app.use(fileUpload({
+    useTempFiles : true,
+    tempFileDir : '/tmp/'
 }));
 app.use(passport.initialize());
 app.use(passport.session());

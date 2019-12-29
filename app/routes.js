@@ -441,7 +441,12 @@ module.exports = function (app, passport, server) {
   });
 
   app.post('/updateOrDeleteCiv', function (req, res) {
-
+    var uploadImage
+    if (req.files === undefined) {
+      uploadImage = null
+    } else {
+      uploadImage = req.files.image
+    }
     if (req.body.action === "update") {
       Civilian.findOneAndUpdate({
         '_id': ObjectId(req.body.civilianID),
@@ -452,7 +457,8 @@ module.exports = function (app, passport, server) {
           "civilian.lastName": req.body.lastName.trim().charAt(0).toUpperCase() + req.body.lastName.trim().slice(1),
           'civilian.birthday': req.body.birthday,
           'civilian.warrants': req.body.warrants,
-          'civilian.licenseStatus': req.body.licenseStatus
+          'civilian.licenseStatus': req.body.licenseStatus,
+          'civilian.image': uploadImage.data
         }
       }, function (err) {
         if (err) return console.error(err);
