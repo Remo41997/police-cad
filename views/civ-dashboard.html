@@ -58,7 +58,6 @@
     </div>
   </nav>
   <header id="second" style='background-image: url("/images/civ-bkground.jpg");'>
-    <div class="header-content">
       <div class="inner">
         <h4>San Andreas - Civilian Operations</h4>
         <div class="col-lg-10 col-lg-offset-1 text-center">
@@ -68,9 +67,42 @@
       </div>
       <hr style="width: 88%;max-width: 100rem;">
 
+      <div>
+        Personas: (Click for Details) | Vehicles: (Click for Details)
+      </div>
 <!--Table for Personas  -->
-      <div class="col-md-4 col-md-offset-1 name-table">
-      <table class="table table-hover" border="1" frame="box">
+      <!-- <div class="col-md-10 col-md-offset-1"> -->
+        <div class="row">
+          <div class="col-md-2">&nbsp;</div>
+          <div class="col-md-8">
+            <div class="row space-16">&nbsp;</div>
+            <div class="row">
+        <% for(var i=0; i<personas.length; i++) {%>
+
+          <!-- <tr data-toggle="modal" data-id=<%=i%> data-target="#viewCiv" onclick="loadCivData(<%=i%>)">
+            <td><%= personas[i].civilian.firstName%> <%= personas[i].civilian.lastName%></td>
+          </tr> -->
+          
+                <div class="col-sm-4">
+                  <div class="thumbnail">
+                    <div class="caption text-center" data-toggle="modal" data-id=<%=i%> data-target="#viewCiv" onclick="loadCivData(<%=i%>)">
+                      <div class="position-relative">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" style="width:72px;height:72px;" />
+                      </div>
+                      <p><i class="glyphicon glyphicon-user light-red lighter bigger-120"></i>&nbsp;<%= personas[i].civilian.firstName%> <%= personas[i].civilian.lastName%></p>
+                      <div class="thumbnail-description smaller"><%= personas[i]._id%></div>
+                    </div>
+                  </div>
+                </div>
+              
+  
+              
+         <% } %>
+        </div>
+        <div class="col-md-2">&nbsp;</div>
+      </div>
+    </div>
+      <!-- <table class="table table-hover" border="1" frame="box">
     <thead>
       <tr>
         Personas: (Click for Details)
@@ -78,16 +110,17 @@
     </thead>
     <tbody>
       <% for(var i=0; i<personas.length; i++) {%>
+
    <tr data-toggle="modal" data-id=<%=i%> data-target="#viewCiv" onclick="loadCivData(<%=i%>)">
      <td><%= personas[i].civilian.firstName%> <%= personas[i].civilian.lastName%></td>
    </tr>
   <% } %>
     </tbody>
-  </table>
+  </table> -->
 </div>
 
 <!--Table for Vehicles  -->
-<div class="col-md-5 col-md-offset-1 name-table">
+<!-- <div class="col-md-5 col-md-offset-1 name-table">
   <table class="table table-hover" border="1" frame="box">
     <thead>
       <tr>
@@ -106,7 +139,7 @@
         <% } %>
       </tbody>
   </table>
-</div>
+</div> -->
 
     </div>
   </header>
