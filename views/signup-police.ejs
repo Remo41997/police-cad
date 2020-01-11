@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Lines Police - CAD</title>
-    <meta name="description" content="Lines Roleplay Police CAD (Computer Aided Dispatch). Built to facilitate the needs of roleplay police and civilians." />
+    <meta name="description" content="Lines Roleplay Police CAD. Built to facilitate the needs of roleplay police and civilians." />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Codeply">
     <link rel="stylesheet" href="./css/bootstrap.min.css" />
@@ -59,10 +59,10 @@
 
         <div class="header-content">
             <div class="inner">
-                <h4>Register as a Civilian</h4>
+                <h4>Register as a Police Officer</h4>
                 <hr>
                  <div class="col-lg-10 col-lg-offset-1 text-center">
-                <form id="signInForm" class="contact-form row" action="/signup-civ" method="post">
+                <form id="signInForm" class="contact-form row" action="/signup-police" method="post">
                 	<% if (message.length > 0) { %>
                   <div class="alert alert-danger col-md-4 col-md-offset-4">
                     <strong>Sorry, <%= message %> </strong>
@@ -80,12 +80,12 @@
                         <input id="inputEmail" type="email" name="email" class="form-control" placeholder="Email Address" required>
                     </div>
                   </div>
-                    <div class="col-md-12">
-                      <div class="col-md-4 col-md-offset-4">
-                          <label>Password</label>
-                          <input id="inputPassword" type="password" name="password" class="form-control" placeholder="Password" required>
-                      </div>
+                  <div class="col-md-12">
+                    <div class="col-md-4 col-md-offset-4">
+                        <label>Password</label>
+                        <input id="inputPassword" type="password" name="password" class="form-control" placeholder="Password" required>
                     </div>
+                  </div>
                     <div class="col-md-12">
                       <div class="col-md-4 col-md-offset-4">
                           <label>Confirm Password</label>
@@ -97,7 +97,6 @@
                       <div id="password-check-good" class="col-md-1" style="display:none">
                          <span class="password-check-good"><i class="glyphicon glyphicon-cd"></i></span>
                       </div>
-
                     </div>
                 </div>
 
@@ -107,7 +106,7 @@
         </div>
 
     </header>
-    <% include footer.html %>    
+    <% include footer %>
     <div id="galleryModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -200,5 +199,4 @@ $('#signInForm').submit(function (evt) {
     evt.preventDefault();
   }
 });
-
 </script>

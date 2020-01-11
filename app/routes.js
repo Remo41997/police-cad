@@ -6,81 +6,87 @@ var Ticket = require('../app/models/ticket');
 var Ems = require('../app/models/ems');
 var ObjectId = require('mongodb').ObjectID;
 var nodemailer = require('nodemailer');
-async = require("async");
+var async = require('async');
 var crypto = require('crypto');
-var path = require('path'),
-  fs = require('fs');
+var path = require('path');
+var fs = require('fs');
+
 module.exports = function (app, passport, server) {
 
-  app.get('/', function (request, response) {
-    response.render('index.html', {
-      message: request.flash('info')
+  app.get('/', function (req, res) {
+    res.render('index', {
+      message: req.flash('info')
+    });
+    
+  });
+
+  app.get('/release-log', function (req, res) {
+    res.render('release-log');
+  });
+
+  app.get('/about', function (req, res) {
+    res.render('about');
+  });
+
+  app.get('/rules', function (req, res) {
+    res.render('rules');
+  });
+
+  app.get('/terms-and-conditions', function (req, res) {
+    res.render('terms-and-conditions');
+  });
+
+  app.get('/privacy-policy', function (req, res) {
+    res.render('privacy-policy');
+  });
+
+  app.get('/contact-us', function (req, res) {
+    res.render('contact-us');
+  });
+
+  app.get('/login', function (req, res) {
+    res.redirect('/');
+  });
+
+  app.get('/login-civ', authCivilian, function (req, res) {
+    res.redirect('civ-dashboard');
+  });
+
+  app.get('/login-police', authPolice, function (req, res) {
+    res.redirect('/police-dashboard')
+  });
+
+  app.get('/login-ems', authEms, function (req, res) {
+    res.redirect('/ems-dashboard')
+  });
+
+  app.get('/signup-civ', function (req, res) {
+    res.render('signup-civ', {
+      message: req.flash('signuperror')
     });
   });
 
-  app.get('/release-log', function (request, response) {
-    response.render('release-log.html');
-  });
-
-  app.get('/about', function (request, response) {
-    response.render('about.html');
-  });
-
-  app.get('/rules', function (request, response) {
-    response.render('rules.html');
-  });
-
-  app.get('/terms-and-conditions', function (request, response) {
-    response.render('terms-and-conditions.html');
-  });
-
-  app.get('/privacy-policy', function (request, response) {
-    response.render('privacy-policy.html');
-  });
-
-  app.get('/login', function (request, response) {
-    response.redirect('/');
-  });
-
-  app.get('/login-civ', authCivilian, function (request, response) {
-    response.redirect('/civ-dashboard');
-  });
-
-  app.get('/login-police', authPolice, function (request, response) {
-    response.redirect('/police-dashboard')
-  });
-
-  app.get('/login-ems', authEms, function (request, response) {
-    response.redirect('/ems-dashboard')
-  });
-
-  app.get('/signup-civ', function (request, response) {
-    response.render('signup-civ.html', {
-      message: request.flash('signuperror')
+  app.get('/signup-police', function (req, res) {
+    res.render('signup-police', {
+      message: req.flash('signuperror')
     });
   });
 
-  app.get('/signup-police', function (request, response) {
-    response.render('signup-police.html', {
-      message: request.flash('signuperror')
+  app.get('/signup-ems', function (req, res) {
+    res.render('signup-ems', {
+      message: req.flash('signuperror')
     });
   });
 
-  app.get('/signup-ems', function (request, response) {
-    response.render('signup-ems.html', {
-      message: request.flash('signuperror')
-    });
+  app.get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
   });
 
-  app.get('/logout', function (request, response) {
-    request.logout();
-    response.redirect('/');
-  });
-
-  app.get('/forgot-password', function (request, response) {
-    response.render('forgot-password.html', {
-      user: request.user,
-      message: request.flash('emailSend')
+  app.get('/forgot-password', function (req, res) {
+    res.render('forgot-password', {
+      user: req.user,
+      message: req.flash('emailSend')
     });
   });
 
@@ -95,22 +101,22 @@ module.exports = function (app, passport, server) {
         req.flash('emailSend', 'Password reset token is invalid or has expired.');
         return res.redirect('/forgot-password');
       }
-      res.render('reset.html', {
+      res.render('reset', {
         user: req.user,
         message: req.flash('resetSend')
       });
     });
   });
 
-  app.get('/civ-dashboard', auth, function (request, response) {
+  app.get('/civ-dashboard', auth, function (req, res) {
     Civilian.find({
-      'civilian.email': request.user.user.email.toLowerCase()
+      'civilian.email': req.user.user.email.toLowerCase()
     }, function (err, dbPersonas) {
       Vehicle.find({
-        'vehicle.email': request.user.user.email.toLowerCase()
+        'vehicle.email': req.user.user.email.toLowerCase()
       }, function (err, dbVehicles) {
-        response.render('civ-dashboard.html', {
-          user: request.user,
+        res.render('civ-dashboard', {
+          user: req.user,
           personas: dbPersonas,
           vehicles: dbVehicles
         });
@@ -118,15 +124,15 @@ module.exports = function (app, passport, server) {
     })
   });
 
-  app.get('/ems-dashboard', auth, function (request, response) {
+  app.get('/ems-dashboard', auth, function (req, res) {
     Ems.find({
-      'ems.email': request.user.user.email.toLowerCase()
+      'ems.email': req.user.user.email.toLowerCase()
     }, function (err, dbPersonas) {
       EmsVehicle.find({
-        'emsVehicle.email': request.user.user.email.toLowerCase()
+        'emsVehicle.email': req.user.user.email.toLowerCase()
       }, function (err, dbVehicles) {
-        response.render('ems-dashboard.html', {
-          user: request.user,
+        res.render('ems-dashboard', {
+          user: req.user,
           personas: dbPersonas,
           vehicles: dbVehicles
         });
@@ -134,26 +140,26 @@ module.exports = function (app, passport, server) {
     })
   });
 
-  app.get('/police-dashboard', auth, function (request, response) {
-    response.render('police-dashboard.html', {
-      user: request.user,
+  app.get('/police-dashboard', auth, function (req, res) {
+    res.render('police-dashboard', {
+      user: req.user,
       vehicles: null,
       civilians: null,
       tickets: null
     });
   });
 
-  app.get('/name-search', auth, function (request, response) {
+  app.get('/name-search', auth, function (req, res) {
     Civilian.find({
-      'civilian.firstName': request.query.firstName.trim().charAt(0).toUpperCase() + request.query.firstName.trim().slice(1),
-      'civilian.lastName': request.query.lastName.trim().charAt(0).toUpperCase() + request.query.lastName.trim().slice(1)
+      'civilian.firstName': req.query.firstName.trim().charAt(0).toUpperCase() + req.query.firstName.trim().slice(1),
+      'civilian.lastName': req.query.lastName.trim().charAt(0).toUpperCase() + req.query.lastName.trim().slice(1)
     }, function (err, dbCivilians) {
       Ticket.find({
-        'ticket.civFirstName': request.query.firstName.trim().charAt(0).toUpperCase() + request.query.firstName.trim().slice(1),
-        'ticket.civLastName': request.query.lastName.trim().charAt(0).toUpperCase() + request.query.lastName.trim().slice(1)
+        'ticket.civFirstName': req.query.firstName.trim().charAt(0).toUpperCase() + req.query.firstName.trim().slice(1),
+        'ticket.civLastName': req.query.lastName.trim().charAt(0).toUpperCase() + req.query.lastName.trim().slice(1)
       }, function (err, dbTickets) {
-        response.render('police-dashboard.html', {
-          user: request.user,
+        res.render('police-dashboard', {
+          user: req.user,
           vehicles: null,
           civilians: dbCivilians,
           tickets: dbTickets
@@ -162,12 +168,12 @@ module.exports = function (app, passport, server) {
     });
   });
 
-  app.get('/plate-search', auth, function (request, response) {
+  app.get('/plate-search', auth, function (req, res) {
     Vehicle.find({
-      'vehicle.plate': request.query.plateNumber.trim().toUpperCase()
+      'vehicle.plate': req.query.plateNumber.trim().toUpperCase()
     }, function (err, dbVehicles) {
-      response.render('police-dashboard.html', {
-        user: request.user,
+      res.render('police-dashboard', {
+        user: req.user,
         civilians: null,
         vehicles: dbVehicles,
         tickets: null
@@ -176,8 +182,8 @@ module.exports = function (app, passport, server) {
   });
 
   // Be sure to place all GET requests above this catchall
-  app.get('*', function (request, response) {
-    response.render('page-not-found.html');
+  app.get('*', function (req, res) {
+    res.render('page-not-found');
   });
 
   app.post('/login-civ', passport.authenticate('login', {
@@ -320,7 +326,7 @@ module.exports = function (app, passport, server) {
       }
     ], function (err) {
       if (err) return next(err);
-      res.render('forgot-password.html', {
+      res.render('forgot-password', {
         message: req.flash('emailSend')
       });
     });
@@ -402,7 +408,6 @@ module.exports = function (app, passport, server) {
       myEms.save(function (err, fluffy) {
         if (err) return console.error(err);
       });
-
     })
   });
 
@@ -441,7 +446,6 @@ module.exports = function (app, passport, server) {
   });
 
   app.post('/updateOrDeleteCiv', function (req, res) {
-
     if (req.body.action === "update") {
       var address
       var occupation
@@ -583,28 +587,31 @@ function auth(req, res, next) {
 }
 
 function authCivilian(req, res, next) {
+  
   if (req.isAuthenticated()) {
     return next();
   }
-  res.render('login-civ.html', {
+  res.render('login-civ', {
     message: req.flash('error')
   });
 }
 
 function authPolice(req, res, next) {
+  
   if (req.isAuthenticated()) {
     return next();
   }
-  res.render('login-police.html', {
+  res.render('login-police', {
     message: req.flash('error')
   });
 }
 
 function authEms(req, res, next) {
+  
   if (req.isAuthenticated()) {
     return next();
   }
-  res.render('login-ems.html', {
+  res.render('login-ems', {
     message: req.flash('error')
   });
 }
