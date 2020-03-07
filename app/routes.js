@@ -164,21 +164,29 @@ module.exports = function (app, passport, server) {
     Civilian.find({
       'civilian.firstName': req.query.firstName.trim().charAt(0).toUpperCase() + req.query.firstName.trim().slice(1),
       'civilian.lastName': req.query.lastName.trim().charAt(0).toUpperCase() + req.query.lastName.trim().slice(1),
-      'civilian.birthday': req.query.dateOfBirth
+      // 'civilian.birthday': req.query.dateOfBirth
     }, function (err, dbCivilians) {
+      const used = process.memoryUsage().heapUsed / 1024 / 1024;
+      console.log(`The dbCivilians uses approximately ${used} MB`);
       Ticket.find({
         'ticket.civFirstName': req.query.firstName.trim().charAt(0).toUpperCase() + req.query.firstName.trim().slice(1),
         'ticket.civLastName': req.query.lastName.trim().charAt(0).toUpperCase() + req.query.lastName.trim().slice(1)
       }, function (err, dbTickets) {
+        const used = process.memoryUsage().heapUsed / 1024 / 1024;
+      console.log(`The dbTickets uses approximately ${used} MB`);
         ArrestReport.find({
           'arrestReport.accusedFirstName': req.query.firstName.trim().charAt(0).toUpperCase() + req.query.firstName.trim().slice(1),
           'arrestReport.accusedLastName': req.query.lastName.trim().charAt(0).toUpperCase() + req.query.lastName.trim().slice(1)
         }, function (err, dbArrestReports) {
+          const used = process.memoryUsage().heapUsed / 1024 / 1024;
+      console.log(`The dbArrestReports uses approximately ${used} MB`);
           Warrant.find({
             'warrant.accusedFirstName': req.query.firstName.trim().charAt(0).toUpperCase() + req.query.firstName.trim().slice(1),
             'warrant.accusedLastName': req.query.lastName.trim().charAt(0).toUpperCase() + req.query.lastName.trim().slice(1),
             'warrant.status': true
           }, function (err, dbWarrants) {
+            const used = process.memoryUsage().heapUsed / 1024 / 1024;
+      console.log(`The dbWarrants uses approximately ${used} MB`);
         res.render('police-dashboard', {
           user: req.user,
           vehicles: null,
