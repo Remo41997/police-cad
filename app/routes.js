@@ -370,6 +370,8 @@ module.exports = function (app, passport, server) {
   });
 
   app.get('/name-search', auth, function (req, res) {
+    var context = req.app.locals.specialContext;
+    req.app.locals.specialContext = null;
     if (req.query.activeCommunityID == '' || req.query.activeCommunityID == null) {
       Civilian.find({
         'civilian.firstName': req.query.firstName.trim().charAt(0).toUpperCase() + req.query.firstName.trim().slice(1),
@@ -404,7 +406,7 @@ module.exports = function (app, passport, server) {
                 Bolo.find({
                   'bolo.communityID': req.user.user.activeCommunity
                 }, function (err, dbBolos) {
-                  res.render('police-dashboard', {
+                  res.render(req.query.urlPath, {
                     user: req.user,
                     vehicles: null,
                     civilians: dbCivilians,
@@ -413,7 +415,8 @@ module.exports = function (app, passport, server) {
                     warrants: dbWarrants,
                     communities: dbCommunities,
                     bolos: dbBolos,
-                    context: null
+                    commUsers: null,
+                    context: context
                   });
                 });
               });
@@ -450,17 +453,31 @@ module.exports = function (app, passport, server) {
                 Bolo.find({
                   'bolo.communityID': req.user.user.activeCommunity
                 }, function (err, dbBolos) {
-                  res.render('police-dashboard', {
-                    user: req.user,
-                    vehicles: null,
-                    civilians: dbCivilians,
-                    tickets: dbTickets,
-                    arrestReports: dbArrestReports,
-                    warrants: dbWarrants,
-                    communities: dbCommunities,
-                    bolos: dbBolos,
-                    context: null
-                  });
+                  //TODO different behavior for dispatch and police dashboard
+                  
+                  console.debug("dbCivilians", dbCivilians)
+                  // if (dbCivilians.length == 0) {
+                  //   req.app.locals.specialContext = "nameLookupFailure";
+                  // } else {
+                  //   req.app.locals.specialContext = "nameLookupSuccess";
+                  // }
+                  // console.debug(context)
+                  var map = {};
+                  map['civilians'] = dbCivilians
+                  req.app.locals.specialContext = map;
+                  res.redirect('/dispatch-dashboard')
+                  // res.render(req.query.urlPath, {
+                  //   user: req.user,
+                  //   vehicles: null,
+                  //   civilians: dbCivilians,
+                  //   tickets: dbTickets,
+                  //   arrestReports: dbArrestReports,
+                  //   warrants: dbWarrants,
+                  //   communities: dbCommunities,
+                  //   bolos: dbBolos,
+                  //   commUsers: null,
+                  //   context: context
+                  // });
                 });
               });
             });

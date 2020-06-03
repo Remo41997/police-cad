@@ -258,6 +258,7 @@
                   <% } %>
                   <div class="col-md-4">
                       <br>
+                      <input type="hidden" name="urlPath", value="dispatch-dashboard">
                       <input type="hidden" id="activeCommunityID" name="activeCommunityID", value="<%=user.user.activeCommunity%>">
                       <button type="submit" class="btn btn-info" onclick="searchNames()">Search</button>
                     </div>
@@ -267,13 +268,13 @@
               <!-- List of Civilians -->
               <div id="civDetails" style="display:none">
                 <div class="panel-group" id="accordion">
-                  <% if (civilians != null) {%>
-                    <% for(var i=0; i<civilians.length; i++) {%>
+                  <% if (context != null) {%>
+                    <% context.civilians.forEach(function (value, i) {%>
                       <div class="panel panel-default background-transparent">
                           <div class="panel-heading" data-toggle="collapse" data-id=<%=i%> data-parent="#accordion" href="#collapse<%=i%>"
                             <h4 class="panel-title">
                               <a class="blue-hover">
-                                  <%= civilians[i].civilian.firstName %> <%= civilians[i].civilian.lastName %> | <%= civilians[i]._id %></a>
+                                  <%= value.civilian.firstName %> <%= value.civilian.lastName %> | <%= value._id %></a>
                             </h4>
                           </div>
                           <% if (i === 0) {%>
@@ -294,7 +295,7 @@
                                   <% } else {%>
                                 <span>(Click on warrant to clear)</span>
                                 <% for(var k=0; k<warrants.length; k++) {%>
-                                  <% if ((warrants[k].warrant.accusedID == civilians[i]._id) && (warrants[k].warrant.status === true)) {%>
+                                  <% if ((warrants[k].warrant.accusedID == value._id) && (warrants[k].warrant.status === true)) {%>
                                     <span id="confirmWarrantModal" data-toggle="modal" href="#confirmClearWarrantModal" onclick="clearWarrantWithValues('<%= warrants[k]._id %>', '<%= warrants[k].warrant.reasons[0] %>')">
                                       <div id="warrantMessage" class="alert alert-danger alert-dismissible" style="display:block">
                                         <strong>Active Warrant!</strong> <%= warrants[k].warrant.reasons[0] %>
@@ -304,42 +305,37 @@
                                 <% } %>
                                 <% } %>
                               <% } %>
-                                
-                              
-
-
-
-                              <% if (civilians[i].civilian.licenseStatus == 3) {%>
+                              <% if (value.civilian.licenseStatus == 3) {%>
                                 <div id="licenseRevokedMessage" class="alert alert-warning" style="display:block">
                                     <strong>Warning!</strong> License is Revoked.
                                   </div>
                                 <% } %>
                                 <div class="text-align-center">
-                                  <button data-toggle="modal" href="#ticketModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenCitation('<%= civilians[i].civilian.firstName%>', '<%=civilians[i].civilian.lastName %>', '<%=civilians[i]._id%>', '<%=civilians[i].civilian.birthday%>');setDateAndTime('#date', '#time');">Issue Citation</button>
-                                  <button data-toggle="modal" href="#warningModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenWarning('<%= civilians[i].civilian.firstName%>', '<%=civilians[i].civilian.lastName %>', '<%=civilians[i]._id%>', '<%=civilians[i].civilian.birthday%>');setDateAndTime('#warning-date', '#warning-time');">Issue Warning</button>
-                                  <button data-toggle="modal" href="#arrestModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenArrest('<%= civilians[i].civilian.firstName%>', '<%=civilians[i].civilian.lastName %>', '<%=civilians[i]._id%>', '<%=civilians[i].civilian.birthday%>');setDateAndTime('#arrest-report-date', '#arrest-report-time');generateCaseNo('#arrest-report-case-no');">Arrest</button>
-                                  <button data-toggle="modal" href="#createWarrantModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenCreateWarrant('<%= civilians[i].civilian.firstName%>', '<%=civilians[i].civilian.lastName %>', '<%=civilians[i]._id%>', '<%=civilians[i].civilian.birthday%>');">Create Warrant</button>
-                                  <!-- <button data-toggle="modal" href="#clearWarrantModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenClearWarrant('<%= civilians[i].civilian.firstName%>', '<%=civilians[i].civilian.lastName %>', '<%=civilians[i]._id%>', '<%=civilians[i].civilian.birthday%>');">Clear Warrant</button> -->
+                                  <button data-toggle="modal" href="#ticketModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenCitation('<%= value.civilian.firstName%>', '<%=value.civilian.lastName %>', '<%=value._id%>', '<%=value.civilian.birthday%>');setDateAndTime('#date', '#time');">Issue Citation</button>
+                                  <button data-toggle="modal" href="#warningModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenWarning('<%= value.civilian.firstName%>', '<%=value.civilian.lastName %>', '<%=value._id%>', '<%=value.civilian.birthday%>');setDateAndTime('#warning-date', '#warning-time');">Issue Warning</button>
+                                  <button data-toggle="modal" href="#arrestModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenArrest('<%= value.civilian.firstName%>', '<%=value.civilian.lastName %>', '<%=value._id%>', '<%=value.civilian.birthday%>');setDateAndTime('#arrest-report-date', '#arrest-report-time');generateCaseNo('#arrest-report-case-no');">Arrest</button>
+                                  <button data-toggle="modal" href="#createWarrantModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenCreateWarrant('<%= value.civilian.firstName%>', '<%=value.civilian.lastName %>', '<%=value._id%>', '<%=value.civilian.birthday%>');">Create Warrant</button>
+                                  <!-- <button data-toggle="modal" href="#clearWarrantModal" class="btn btn-primary btn-md margin-bottom-05" onclick="OpenClearWarrant('<%= value.civilian.firstName%>', '<%=value.civilian.lastName %>', '<%=value._id%>', '<%=value.civilian.birthday%>');">Clear Warrant</button> -->
                                 </div>
                                 <hr/>
-                                Driver's ID #: <%= civilians[i]._id%><br/>
-                                Date of Birth: <%= civilians[i].civilian.birthday%><br/>
-                                <% if (civilians[i].civilian.licenseStatus == 1) {%>
+                                Driver's ID #: <%= value._id%><br/>
+                                Date of Birth: <%= value.civilian.birthday%><br/>
+                                <% if (value.civilian.licenseStatus == 1) {%>
                                   <p class="plate-body-text">Driver's License Status: Valid <i class="ion-checkmark-circled color-green"></i></p>
-                                  <% } else if (civilians[i].civilian.licenseStatus == 3) {%>
+                                  <% } else if (value.civilian.licenseStatus == 3) {%>
                                     <p class="plate-body-text">Driver's License Status: Revoked <i class="ion-alert-circled color-yellow"></i></p>
                                     <% } else {%>
                                   <p class="plate-body-text">Driver's License Status: Invalid <i class="ion-alert-circled color-red"></i></p>
                                 <% } %>
-                                <% if (civilians[i].civilian.firearmLicense == 2) {%>
+                                <% if (value.civilian.firearmLicense == 2) {%>
                                   <p class="plate-body-text">Firearm License: Valid <i class="ion-checkmark-circled color-green"></i></p>
-                                  <% } else if (civilians[i].civilian.firearmLicense == 3) {%>
+                                  <% } else if (value.civilian.firearmLicense == 3) {%>
                                     <p class="plate-body-text">Firearm License: Revoked <i class="ion-alert-circled color-red"></i></p>
                                     <% } else {%>
                                       <p class="plate-body-text">Firearm License: None <i class="ion-alert-circled color-yellow"></i></p>
                                 <% } %>
-                                Address: <%= civilians[i].civilian.address%><br/>
-                                Occupation: <%= civilians[i].civilian.occupation%><br/>
+                                Address: <%= value.civilian.address%><br/>
+                                Occupation: <%= value.civilian.occupation%><br/>
                                 <hr style="width: 88%;max-width: 100rem;">
                                 <h4>Criminal History</h4>
                                 <ul class="nav nav-pills mb-3 margin-bottom-1" id="pills-tab" role="tablist">
@@ -428,7 +424,7 @@
                           
                         </div>
                         
-                        <% } %>
+                        <% }) %>
                         
                       <% } %>
                   </div>
@@ -1554,17 +1550,19 @@ $(document).ready(function() {
     })
 
   let allVehicles = <%-JSON.stringify(vehicles)%>;
-  let allCivilians = <%-JSON.stringify(civilians)%>;
+  let allCivilians = <%-JSON.stringify(context)%>;
   if ( allVehicles != null) {
     $('#plateDetails').show()
     $('#plateDatabaseModal').modal('toggle');
     searchPlate()
   } else if (allCivilians != null) {
+    console.log("shhte civs")
     $('#civDetails').show()
     $('#nameDatabaseModal').modal('toggle');
     searchNames()
   }
   else {
+    console.log('hide the cis')
     $('#plateDetails').removeAttr("style").hide()
     $('#civDetails').removeAttr("style").hide()
   }
@@ -1636,26 +1634,26 @@ function searchPlate() {
   }
 }
 
-  function searchNames() {
-    let x = document.getElementById('civDetails');
-    if (x.style.display === 'none') {
-      x.style.display = 'block';
-    } else {}
-    let myCiv = <%-JSON.stringify(civilians)%>;
-    let myTicket = <%-JSON.stringify(tickets)%>;
-    if (myCiv === null || myTicket === null) {
-      hideCivPopover();
-      return
-    } else if (myCiv.length === 0) {
-      let civDetails = document.getElementById('civDetails')
-      civDetails.style.display = 'none'
-      let civNotFoundMsg = document.getElementById('civilianNotFound')
-      civNotFoundMsg.style.display = 'block'
-      hideCivPopover();
-      return
-    }
-    hideCivPopover();
-  }
+  // function searchNames() {
+  //   let x = document.getElementById('civDetails');
+  //   if (x.style.display === 'none') {
+  //     x.style.display = 'block';
+  //   } else {}
+  //   let myCiv = <%-JSON.stringify(context)%>;
+  //   let myTicket = <%-JSON.stringify(tickets)%>;
+  //   if (myCiv === null || myTicket === null) {
+  //     hideCivPopover();
+  //     return
+  //   } else if (myCiv.length === 0) {
+  //     let civDetails = document.getElementById('civDetails')
+  //     civDetails.style.display = 'none'
+  //     let civNotFoundMsg = document.getElementById('civilianNotFound')
+  //     civNotFoundMsg.style.display = 'block'
+  //     hideCivPopover();
+  //     return
+  //   }
+  //   hideCivPopover();
+  // }
 
   function openSearch() {
     $('#searchTicketDiv').show()
@@ -1852,10 +1850,10 @@ function searchPlate() {
   })
 
   // removes all the names from caching on the website when the modal is closed
-  $('#nameDatabaseModal').on('hidden.bs.modal', function (e) {
-    let civDetails = document.getElementById('civDetails')
-      civDetails.style.display = 'none'
-  })
+  // $('#nameDatabaseModal').on('hidden.bs.modal', function (e) {
+  //   let civDetails = document.getElementById('civDetails')
+  //     civDetails.style.display = 'none'
+  // })
 
   $('#plateDatabaseModal').on('hidden.bs.modal', function () {
     $(this).find('form').trigger('reset');
